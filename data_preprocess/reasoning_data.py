@@ -12,7 +12,6 @@ from verl.utils.hdfs_io import copy, makedirs
 from sklearn.model_selection import train_test_split
 import argparse
 
-
 def wrap_answer(text: str) -> str:
     # Find the position of </think>
     think_end = text.find('</think>')
@@ -31,6 +30,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--local_dir", default="data/glavieai")
     parser.add_argument("--hdfs_dir", default=None)
+    parser.add_argument("--sample_size", default=300_000, type=int)
     parser.add_argument("--test_size", default=0.2, type=float, help="Proportion of dataset to include in test split")
 
     args = parser.parse_args()
@@ -39,7 +39,7 @@ if __name__ == "__main__":
     dataset_raw = datasets.load_dataset(data_source, 'default', streaming=True)
 
     dataset_iterable = dataset_raw['train']
-    sampled_iterable = dataset_iterable.shuffle(buffer_size=10_000).take(300_000)
+    sampled_iterable = dataset_iterable.shuffle(buffer_size=10_000).take(args.sample_size)
 
     sampled_list = list(sampled_iterable)
     sampled_dataset = Dataset.from_list(sampled_list)
@@ -63,7 +63,7 @@ if __name__ == "__main__":
             question_raw = example.pop('prompt')
             answer_raw = example.pop('response')
             solution = wrap_answer(answer_raw)
-            
+
             data = {
                 "data_source": data_source,
                 "prompt": [{"role": "user", "content": question_raw}],
@@ -80,7 +80,7 @@ if __name__ == "__main__":
                 }
             }
             return data
-        
+
         return process_fn
 
     local_dir = args.local_dir
