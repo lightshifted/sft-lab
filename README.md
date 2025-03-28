@@ -28,3 +28,4 @@
 # Heads-Up
 - You'll want to modify `train.sh` to the specs of your training run
 - Tracking the training run with Weights & Biases is recommended
+- For `train.sh` configuration options, see [here](https://verl.readthedocs.io/en/latest/examples/config.html#trainer)

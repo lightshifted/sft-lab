@@ -1,3 +1,4 @@
+# Replace the original fsdp_sft_trainer.py in sft-lab/verl/verl/trainer/fsdp_sft_trainer.py with this file.
 """
 A lightweight one-file FSDP SFT Trainer from vERL with some modifications.
 """
