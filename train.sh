@@ -25,4 +25,7 @@ torchrun \
     trainer.project_name=llama3.1-instruct-sft \
     trainer.experiment_name=llama3.1-instruct-sft \
     trainer.total_epochs=2 \
+    trainer.save_frequency=100 \
+    trainer.test_freq=100 \
+    trainer.remove_previous_ckpt_in_save=true \
     trainer.logger=['console','wandb']
