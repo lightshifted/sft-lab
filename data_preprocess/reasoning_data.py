@@ -6,6 +6,7 @@ import re
 import os
 import datasets
 import textwrap
+import pandas as pd
 
 from datasets import Dataset
 from verl.utils.hdfs_io import copy, makedirs
@@ -26,12 +27,25 @@ def wrap_answer(text: str) -> str:
     result = text[:content_start] + '\n<answer>\n' + content + '\n</answer>'
     return result
 
+def get_sequence_length(example, max_seq_len=4096):
+    """
+    Calculate the total length of prompt + response and filter if exceeding max_seq_len.
+    """
+    prompt = example['prompt']
+    response = example['response']
+    
+    # Calculate total sequence length (you might want to use tokenizer-based length for more accuracy)
+    total_length = len(prompt) + len(response)
+    
+    return total_length <= max_seq_len
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--local_dir", default="data/glavieai")
     parser.add_argument("--hdfs_dir", default=None)
     parser.add_argument("--sample_size", default=300_000, type=int)
     parser.add_argument("--test_size", default=0.2, type=float, help="Proportion of dataset to include in test split")
+    parser.add_argument("--max_seq_len", default=8192, type=int, help="Maximum sequence length of question + answer")
 
     args = parser.parse_args()
 
@@ -41,22 +55,20 @@ if __name__ == "__main__":
     dataset_iterable = dataset_raw['train']
     sampled_iterable = dataset_iterable.shuffle(buffer_size=10_000).take(args.sample_size)
 
-    sampled_list = list(sampled_iterable)
+    # Filter based on sequence length
+    filtered_iterable = sampled_iterable.filter(
+        lambda x: get_sequence_length(x, max_seq_len=args.max_seq_len)
+    )
+
+    sampled_list = list(filtered_iterable)
     sampled_dataset = Dataset.from_list(sampled_list)
 
     # Split the dataset into train and test sets
     train_list, test_list = train_test_split(sampled_list, test_size=args.test_size, random_state=42)
     train_dataset = Dataset.from_list(train_list)
     test_dataset = Dataset.from_list(test_list)
-
-    # SYSTEM_PROMPT = textwrap.dedent("""Let's think step by step and respond in this format:
-    # <reasoning>
-    # str
-    # </reasoning>
-    # <answer>
-    # str
-    # </answer>
-    # """).strip()
+    print(f'train size: {train_dataset}')
+    print(f'test size: {test_dataset}')
 
     def make_map_fn(split):
         def process_fn(example, idx):
@@ -67,6 +79,7 @@ if __name__ == "__main__":
             data = {
                 "data_source": data_source,
                 "prompt": [{"role": "user", "content": question_raw}],
+                "response": answer_raw,
                 "ability": "reasoning",
                 "reward_model": {
                     "style": "rule",
