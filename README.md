@@ -20,7 +20,6 @@
 9.  ```HF_TOKEN=hf_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx huggingface-cli download meta-llama/Llama-3.1-8B-Instruct \
     --local-dir ~/models/meta-llama3.1-8b-instruct \
     --local-dir-use-symlinks False```
-
 ## Start Training
 10. ```chmod +x train.sh```
 11. ```./train.sh```
