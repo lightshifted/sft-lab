@@ -21,7 +21,7 @@ pip install -U scikit-learn
 pip install liger-kernel
 
 # Clone verl repository
-git clone https://github.com/volcengine/verl.git && cd verl && pip install -e .
+git clone https://github.com/volcengine/verl.git && cd verl && git checkout v0.3.0.post0 && pip install -e .
 
 # Patch vERL SFT Trainer
 cp fsdp_sft_trainer.py ~/sft-lab/verl/verl/trainer/fsdp_sft_trainer.py
