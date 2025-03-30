@@ -20,7 +20,7 @@ torchrun \
     data.train_batch_size=64 \
     data.micro_batch_size_per_gpu=2 \
     data.max_length=8192 \
-    model.partial_pretrain=/home/ubuntu/sft-lab/train_outputs/meta-llama3.1-8b-instruct \
+    model.partial_pretrain=/home/ubuntu/sft-lab/models/meta-llama3.1-8b-instruct \
     model.enable_gradient_checkpointing=true \
     model.use_liger=true \
     trainer.default_hdfs_dir=hdfs://user/verl/experiments/meta/llama-3.1-8B-Instruct/ \
