@@ -21,3 +21,9 @@ pip install -U scikit-learn
 
 # Clone verl repository
 git clone https://github.com/volcengine/verl.git && cd verl && pip install -e .
+
+# Patch vERL SFT Trainer
+cp fsdp_sft_trainer.py ~/sft-lab/verl/verl/trainer/fsdp_sft_trainer.py
+
+# Patch vERL dataset handler
+cp sft_dataset.py ~/sft-lab/verl/verl/utils/dataset/sft_dataset.py
