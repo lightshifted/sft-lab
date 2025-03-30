@@ -18,6 +18,7 @@ pip install vllm
 pip install --upgrade pillow
 pip install flash-attn --no-build-isolation
 pip install -U scikit-learn
+pip install liger-kernel
 
 # Clone verl repository
 git clone https://github.com/volcengine/verl.git && cd verl && pip install -e .
