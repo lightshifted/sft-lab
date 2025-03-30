@@ -50,7 +50,7 @@ if __name__ == "__main__":
     dataset_raw = datasets.load_dataset(data_source, 'default', streaming=True)
 
     dataset_iterable = dataset_raw['train']
-    sampled_iterable = dataset_iterable.shuffle(buffer_size=10_000).take(args.sample_size)
+    sampled_iterable = dataset_iterable.shuffle(buffer_size=10_000, seed=42).take(args.sample_size)
 
     # Filter based on sequence length
     filtered_iterable = sampled_iterable.filter(
