@@ -28,6 +28,9 @@
 11. ```chmod +x train.sh```
 12. ```./train.sh```
 
+## Push SFT Model to Hugging Face
+13. ```HF_TOKEN=<your_huggingface_token> ./push_to_hf.sh <path_to_checkpoint> <your_huggingface_repo>```
+
 ## Heads-Up
 
 ### `train.sh` configuration options:
