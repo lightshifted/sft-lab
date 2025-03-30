@@ -17,12 +17,15 @@ torchrun \
     data.val_files=/home/ubuntu/sft-lab/data/glavieai/test.parquet \
     data.prompt_key=prompt \
     data.response_key=response \
+    data.train_batch_size=64 \
     data.micro_batch_size_per_gpu=2 \
     data.max_length=8192 \
-    model.partial_pretrain=/home/ubuntu/sft-lab/models/meta-llama3.1-8b-instruct \
+    model.partial_pretrain=/home/ubuntu/sft-lab/train_outputs/meta-llama3.1-8b-instruct \
     model.enable_gradient_checkpointing=true \
+    model.use_liger=true \
     trainer.default_hdfs_dir=hdfs://user/verl/experiments/meta/llama-3.1-8B-Instruct/ \
     trainer.project_name=llama3.1-instruct-sft \
     trainer.experiment_name=llama3.1-instruct-sft \
-    trainer.total_epochs=2 \
+    trainer.total_epochs=1 \
+    trainer.default_local_dir=/home/ubuntu/sft-lab/train_output \
     trainer.logger=['console','wandb']
