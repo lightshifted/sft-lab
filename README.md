@@ -18,11 +18,15 @@
 
 ## Download Llama-3.1-8B-Instruct
 9.  ```HF_TOKEN=hf_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx huggingface-cli download meta-llama/Llama-3.1-8B-Instruct \
-    --local-dir ~/models/meta-llama3.1-8b-instruct \
+    --local-dir ~/sft-lab/models/meta-llama3.1-8b-instruct \
     --local-dir-use-symlinks False```
+
+## Prepare Training Data
+10. ```python data_preprocess/reasoning_data.py --sample_size 300_000```
+
 ## Start Training
-10. ```chmod +x train.sh```
-11. ```./train.sh```
+11. ```chmod +x train.sh```
+12. ```./train.sh```
 
 # Heads-Up
 - You'll want to modify `train.sh` to the specs of your training run
