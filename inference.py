@@ -3,6 +3,7 @@ from accelerate import Accelerator
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
 import os
+import pandas as pd
 from datetime import datetime
 
 # Initialize Accelerator for multi-GPU support
@@ -33,19 +34,16 @@ str
 </answer>
 """).strip()
 
-# Example prompts
-prompts = [
-    "What is the meaning of life?",
-    "How does gravity work?",
-    "Tell me a joke."
-]
+# Get sample prompts
+df = pd.read_parquet('data/glavieai/train.parquet')
+prompts = df['prompt'].sample(10, random_state=42).tolist()
 
 # Apply chat template to each prompt (on CPU)
 chat_prompts = []
 for prompt in prompts:
     prompt_chat = [
-        # {'role': 'system', 'content': SYSTEM_PROMPT},
-        {'role': 'user', 'content': prompt}
+        {'role': 'system', 'content': SYSTEM_PROMPT},
+        {'role': 'user', 'content': prompt[0]['content']}
     ]
     prompt_chat_str = tokenizer.apply_chat_template(
         prompt_chat,
@@ -67,7 +65,7 @@ if accelerator.is_main_process:
     with torch.no_grad():
         outputs = unwrapped_model.generate(
             **inputs,
-            max_new_tokens=6000,
+            max_new_tokens=8192,
             do_sample=True,
             temperature=0.9
         )
@@ -96,7 +94,7 @@ if accelerator.is_main_process and results is not None:
     with open(output_file, "w", encoding="utf-8") as f:
         f.write("Inference Results\n")
         f.write("=" * 50 + "\n\n")
-        for original_prompt, result in zip(prompts, results):
+        for original_prompt, result in zip(chat_prompts, results):
             f.write(f"Prompt:\n{original_prompt}\n\n")
             f.write(f"Response:\n{result}\n")
             f.write("-" * 50 + "\n\n")
