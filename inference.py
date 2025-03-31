@@ -10,7 +10,7 @@ from datetime import datetime
 accelerator = Accelerator()
 
 # Model ID
-model_id = "meta-llama/Llama-3.1-8B-Instruct"
+model_id = "semantichealth/llama-3.1-instruct-reasoning-v1-181072"
 
 # Load tokenizer and model (on CPU first)
 tokenizer = AutoTokenizer.from_pretrained(model_id)
@@ -35,10 +35,10 @@ str
 """).strip()
 
 # Get sample prompts
-df = pd.read_parquet('data/glavieai/train.parquet')
+df = pd.read_parquet('data/glavieai/test.parquet')
 prompts = df['prompt'].sample(10, random_state=42).tolist()
 
-# Apply chat template to each prompt (on CPU)
+# Apply chat template to each prompt
 chat_prompts = []
 for prompt in prompts:
     prompt_chat = [
@@ -47,7 +47,7 @@ for prompt in prompts:
     ]
     prompt_chat_str = tokenizer.apply_chat_template(
         prompt_chat,
-        add_generation_prompt=True,
+        add_generation_prompt=False,
         tokenize=False
     )
     chat_prompts.append(prompt_chat_str)
@@ -58,7 +58,6 @@ inputs = tokenizer(chat_prompts, return_tensors="pt", padding=True)
 # Move inputs to the distributed device
 inputs = {key: value.to(accelerator.device) for key, value in inputs.items()}
 
-# Custom generation loop (since DDP doesn't support generate)
 # Gather inputs to main process and use unwrapped model for generation
 if accelerator.is_main_process:
     unwrapped_model = accelerator.unwrap_model(model)
@@ -94,8 +93,8 @@ if accelerator.is_main_process and results is not None:
     with open(output_file, "w", encoding="utf-8") as f:
         f.write("Inference Results\n")
         f.write("=" * 50 + "\n\n")
-        for original_prompt, result in zip(chat_prompts, results):
-            f.write(f"Prompt:\n{original_prompt}\n\n")
+        for original_prompt, result in zip(prompts, results):
+            f.write(f"Prompt:\n{original_prompt[0]['content']}\n\n")
             f.write(f"Response:\n{result}\n")
             f.write("-" * 50 + "\n\n")
             print(f"Prompt: {original_prompt}\nResponse: {result}\n")

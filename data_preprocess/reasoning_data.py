@@ -69,7 +69,7 @@ if __name__ == "__main__":
 
     def make_map_fn(split):
         def process_fn(example, idx):
-            question_raw = example.pop('prompt')                
+            question_raw = example.pop('prompt')
             answer_raw = example.pop('response')
             solution = wrap_answer(answer_raw)
 
