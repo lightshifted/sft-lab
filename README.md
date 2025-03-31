@@ -31,6 +31,9 @@
 ## Push SFT Model to Hugging Face
 13. ```HF_TOKEN=<your_huggingface_token> ./push_to_hf.sh <path_to_checkpoint> <your_huggingface_repo>```
 
+## Inference
+14. ```python inference.py```
+
 ## Heads-Up
 
 ### `train.sh` configuration options:
