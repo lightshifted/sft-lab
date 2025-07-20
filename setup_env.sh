@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Accept terms of service
+conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main
+conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
+
 # Create the conda environment
 conda create --name unsloth_env \
     python=3.11 \
